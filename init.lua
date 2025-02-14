@@ -179,16 +179,6 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
 -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -911,7 +901,7 @@ require('lazy').setup({
       'MunifTanjim/nui.nvim',
       -- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
     },
-    opts = {},
+    --opts = {},
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -986,6 +976,52 @@ require('lazy').setup({
     },
   },
 })
+-- Keybinds to make split navigation easier.
+--  Use CTRL+<hjkl> to switch between windows
+--
+--  See `:help wincmd` for a list of all window commands
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- CUSTOM KEYMAPS
+vim.keymap.set('n', '<leader>f', ':w<CR>', { desc = 'Save [f]ile' })
+vim.keymap.set('n', '<leader>tt', ':Neotree toggle<CR>', { desc = '[T]oggle file [t]ree' })
+vim.keymap.set('n', '<leader>]', ':bn<CR>', { desc = 'Go to next buffer' })
+vim.keymap.set('n', '<leader>[', ':bp<CR>', { desc = 'Go to previous buffer' })
+vim.keymap.set('n', '<leader>W', ':bd!<CR>', { desc = 'Close current buffer' })
+
+local auto_cmd_group = vim.api.nvim_create_augroup('MyAutoCmds', { clear = true })
+
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = 'init.lua',
+  group = auto_cmd_group,
+  command = 'source <afile>',
+})
+vim.api.nvim_create_user_command('EditConfig', function()
+  vim.cmd ':e ~/.config/nvim/init.lua'
+end, {})
+
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = '*.ts',
+  group = auto_cmd_group,
+  callback = function()
+    local filename = vim.api.nvim_buf_get_name(0)
+    vim.cmd(':! yarn prettier --write ' .. filename)
+  end,
+})
+
+vim.api.nvim_create_user_command('Prettier', function()
+  local filename = vim.api.nvim_buf_get_name(0)
+  vim.cmd ':w'
+  vim.cmd(':! yarn prettier --write ' .. filename)
+end, {})
+
+vim.api.nvim_create_user_command('Test', function()
+  local filename = vim.api.nvim_buf_get_name(0)
+  vim.cmd(':! yarn test ' .. filename)
+end, {})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
