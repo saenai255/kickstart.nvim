@@ -986,7 +986,8 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- CUSTOM KEYMAPS
-vim.keymap.set('n', '<leader>f', ':w<CR>', { desc = 'Save [f]ile' })
+vim.keymap.set('n', '<leader>Q', ':q<CR>', { desc = '[Q]uit' })
+vim.keymap.set('n', '<leader>S', ':w<CR>', { desc = '[S]ave file' })
 vim.keymap.set('n', '<leader>tt', ':Neotree toggle<CR>', { desc = '[T]oggle file [t]ree' })
 vim.keymap.set('n', '<leader>]', ':bn<CR>', { desc = 'Go to next buffer' })
 vim.keymap.set('n', '<leader>[', ':bp<CR>', { desc = 'Go to previous buffer' })
@@ -999,28 +1000,25 @@ vim.api.nvim_create_autocmd('BufWritePost', {
   group = auto_cmd_group,
   command = 'source <afile>',
 })
-vim.api.nvim_create_user_command('EditConfig', function()
-  vim.cmd ':e ~/.config/nvim/init.lua'
-end, {})
 
 vim.api.nvim_create_autocmd('BufWritePost', {
   pattern = '*.ts',
   group = auto_cmd_group,
-  callback = function()
-    local filename = vim.api.nvim_buf_get_name(0)
-    vim.cmd(':! yarn prettier --write ' .. filename)
-  end,
+  command = 'Prettier',
 })
 
-vim.api.nvim_create_user_command('Prettier', function()
-  local filename = vim.api.nvim_buf_get_name(0)
-  vim.cmd ':w'
-  vim.cmd(':! yarn prettier --write ' .. filename)
+vim.api.nvim_create_user_command('EditConfig', function()
+  vim.cmd ':e ~/.config/nvim/init.lua'
 end, {})
 
 vim.api.nvim_create_user_command('Test', function()
   local filename = vim.api.nvim_buf_get_name(0)
   vim.cmd(':! yarn test ' .. filename)
+end, {})
+
+vim.api.nvim_create_user_command('Prettier', function()
+  local filename = vim.api.nvim_buf_get_name(0)
+  vim.cmd(':silent ! yarn prettier --write ' .. filename)
 end, {})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
