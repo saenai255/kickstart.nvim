@@ -985,41 +985,7 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- CUSTOM KEYMAPS
-vim.keymap.set('n', '<leader>Q', ':q<CR>', { desc = '[Q]uit' })
-vim.keymap.set('n', '<leader>S', ':w<CR>', { desc = '[S]ave file' })
-vim.keymap.set('n', '<leader>tt', ':Neotree toggle<CR>', { desc = '[T]oggle file [t]ree' })
-vim.keymap.set('n', '<leader>]', ':bn<CR>', { desc = 'Go to next buffer' })
-vim.keymap.set('n', '<leader>[', ':bp<CR>', { desc = 'Go to previous buffer' })
-vim.keymap.set('n', '<leader>W', ':bd!<CR>', { desc = 'Close current buffer' })
-
-local auto_cmd_group = vim.api.nvim_create_augroup('MyAutoCmds', { clear = true })
-
-vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = 'init.lua',
-  group = auto_cmd_group,
-  command = 'source <afile>',
-})
-
-vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = '*.ts',
-  group = auto_cmd_group,
-  command = 'Prettier',
-})
-
-vim.api.nvim_create_user_command('EditConfig', function()
-  vim.cmd ':e ~/.config/nvim/init.lua'
-end, {})
-
-vim.api.nvim_create_user_command('Test', function()
-  local filename = vim.api.nvim_buf_get_name(0)
-  vim.cmd(':! yarn test ' .. filename)
-end, {})
-
-vim.api.nvim_create_user_command('Prettier', function()
-  local filename = vim.api.nvim_buf_get_name(0)
-  vim.cmd(':silent ! yarn prettier --write ' .. filename)
-end, {})
+dofile(vim.fn.stdpath 'config' .. '/lua/custom/plugins/init.lua')
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
