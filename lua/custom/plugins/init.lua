@@ -9,4 +9,6 @@ dofile(cwd .. '/keymaps.lua')
 dofile(cwd .. '/commands.lua')
 dofile(cwd .. '/autocmds.lua')
 
+vim.cmd ':Neotree float'
+
 return {}
