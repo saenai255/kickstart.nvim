@@ -217,7 +217,12 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  -- Shows function signature when writing params
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+  }, -- Shows function signature when writing params
   {
     'ray-x/lsp_signature.nvim',
     event = 'VeryLazy',
@@ -628,6 +633,7 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
+        zls = {},
         ols = {},
         lua_ls = {
           -- cmd = { ... },
